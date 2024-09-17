@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Flask App{% endblock %}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,30 +17,31 @@
         }
         .sidenav {
             height: 100vh;
-            width: 200px;
+            width: 230px;
             position: fixed;
-            padding: 15px;
-            border: 1px solid #FFFFFF;
             background-image: url('/static/images/Sidenav.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
             color: #FFFFFF;
+            box-shadow: inset -20px 0 25px rgba(0, 0, 0, 0.4);
+            padding-top: 15px;
         }
         .sidenav h3 {
             color: #FFFFFF;
             border: 1px solid #FFFFFF;
             padding: 5px;
+            margin: 15px;
             text-align: center;
         }
-        .sidenav a, .sidenav form {
+        .sidenav .nav-link, .sidenav form {
             display: block;
             color: #FFFFFF;
-            padding: 10px;
+            padding: 10px 15px;
             text-decoration: none;
         }
-        .sidenav a:hover, .sidenav form:hover {
-            background-color: #878a8a;
+        .sidenav .nav-link:hover, .sidenav form:hover {
+            background-color: rgba(150, 200, 255, 0.25);
         }
         .sidenav form {
             margin: 0;
@@ -66,7 +70,11 @@
         header {
             text-align: center;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-image: url('/static/images/header.png'); /* Add background image here */
+            background-size: cover; /* Ensure the background image covers the entire header */
+            background-repeat: no-repeat; /* Prevent the image from repeating */
+            background-position: center; /* Center the background image */
+            color: #FFFFFF;
             font-size: 24px;
             font-weight: bold;
             margin-left: 220px;
@@ -85,22 +93,29 @@
             font-size: 12px;
             color: #555;
         }
+        .nav-link.selected {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        #logout-btn {
+            color: #f00;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    Online Course Registration Project
+<header id="main-header">
+    {{ 'Registered Courses' if selected_nav_link == "registered_courses" else (
+            'Search for Courses' if selected_nav_link == "course_search" else 'Profile Information'
+    )}}
 </header>
 
 <div class="sidenav">
-    <h3>Navigation</h3>
-    <a href="/">Home</a>
-    <a href="/profile">Profile</a>
-    <a href="/course_search">Course Search</a>
-    <a href="/registered_courses">Registered Courses</a>
+    <a class="nav-link {{ 'selected' if selected_nav_link == 'profile' else ''}}" href="/">Profile</a>
+    <a class="nav-link {{ 'selected' if selected_nav_link == 'registered_courses' else ''}}" href="/registered_courses">Registered Courses</a>
+    <a class="nav-link {{ 'selected' if selected_nav_link == 'course_search' else ''}}" href="/course_search">Course Search</a>
+
     <form action="/logout" method="post">
-        <button type="submit">Logout</button>
+        <button id="logout-btn" class="nav-link" type="submit"><b>Logout</b></button>
     </form>
 </div>
 
@@ -111,7 +126,7 @@
 <footer>
     Online Course Registration Project 2024 - CMSC 495
     <div class="names">
-        Angelozzi, Brian / Beatty, Sidney / Murray, Brian / Shapiro, Brian 
+        Shapiro, Brian / Murray, Brian / Angelozzi, Brian / Beatty, Sidney
     </div>
 </footer>
 
